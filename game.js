@@ -1,5 +1,5 @@
 let config = {
-    width: 812,
+    width: 667,
 	height: 375,
     //backgroundColor: 0x000000,
     url: "yesbesoklibur.com",
