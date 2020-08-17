@@ -10,7 +10,7 @@ class Lv01 extends Phaser.Scene {
 		this.load.image('ground', '../assets/platform.png');
 		this.load.tilemapTiledJSON('lv01', '../assets/map.json');
 		this.load.image('LandTile', '../assets/Land.png');
-		this.load.spritesheet('char', '../assets/Bug.png', {frameWidth: 42, frameHeight: 30});
+		this.load.spritesheet('char', '../assets/piting.png', {frameWidth: 30, frameHeight: 42});
 	}
 
     create(){
@@ -23,8 +23,9 @@ class Lv01 extends Phaser.Scene {
 		this.cursors = this.input.keyboard.createCursorKeys();
 		this.teks = this.add.text(10, 10, 0);
 
-		this.player = this.physics.add.sprite(100, 500, "char", 0);
-		this.player.body.setSize(30,28);
+		this.player = this.physics.add.sprite(100, 400, "char", 0);
+		this.player.body.setSize(30,25);
+		this.player.body.setOffset(0,16);
 		this.animasiJalan = this.anims.create({
             key: 'jalan',
             frames: this.anims.generateFrameNumbers('char', {
@@ -54,7 +55,7 @@ class Lv01 extends Phaser.Scene {
 	}
 	
 	update(){
-		this.animJalanCheck();
+		//this.animJalanCheck();
 		this.jumpCheck();      
 		this.bumpCheck();  
 	}
