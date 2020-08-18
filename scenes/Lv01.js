@@ -25,9 +25,12 @@ class Lv01 extends Phaser.Scene {
 		this.cursors = this.input.keyboard.createCursorKeys();
 		this.teks = this.add.text(10, 10, 0);
 
-		this.player = this.physics.add.sprite(100, 500, "char", 0);
+		this.player = this.physics.add.sprite(80, 1420, "char", 0);
 		this.player.body.setSize(30,25);
 		this.player.body.setOffset(0,16);
+
+		this.pl01 = this.add.zone(0, 500, 500, 30);
+
 		this.animasiJalan = this.anims.create({
             key: 'jalan',
             frames: this.anims.generateFrameNumbers('char', {
@@ -44,19 +47,29 @@ class Lv01 extends Phaser.Scene {
         });
         //this.player.play('jalan');
 
-		this.physics.world.setBounds(0, 0, 1120, 704);
+        this.deadZone = this.add.zone(0, 1540, 2560, 1);
+        this.deadZone.setOrigin(0);
+        this.physics.add.existing(this.deadZone);
+        this.deadZone.body.setAllowGravity(false);
+
+		this.physics.world.setBounds(0, 0, 2560, 1600);
 		this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
-		this.cameras.main.setBounds(0, 0, 1120, 704);
+		this.cameras.main.setBounds(0, 0, 2560, 1600);
 		this.cameras.main.setBackgroundColor(0x7fdbda);
 		
 		this.physics.add.collider(this.player, this.layer1, null, null, this);
+		this.physics.add.overlap(this.player, this.deadZone, () => {
+			this.cameras.main.shake();
+			this.player.setVisible(false);
+			setTimeout(() => this.scene.restart(), 5000);
+		}, null, this);
 		
 		this.player.setActive(true);
 		this.player.setCollideWorldBounds(true);
 		this.player.setVelocity(60, 0);
 		this.player.setBounce(1, 0);
 		
-		this.physics.add.collider(this.player, [this.ground, this.ground2]);
+		//this.physics.add.collider(this.player, [this.ground, this.ground2]);
 		
 	}
 	
