@@ -1,7 +1,7 @@
-class Lv01 extends Phaser.Scene {
+class PlayScene extends Phaser.Scene {
     constructor() {
         super({
-			key: "l01"
+			key: "playScene"
 		});
     }
 
@@ -47,7 +47,7 @@ class Lv01 extends Phaser.Scene {
         });
         //this.player.play('jalan');
 
-        this.deadZone = this.add.zone(0, 1540, 2560, 1);
+        this.deadZone = this.add.zone(0, 1510, 2560, 1);
         this.deadZone.setOrigin(0);
         this.physics.add.existing(this.deadZone);
         this.deadZone.body.setAllowGravity(false);

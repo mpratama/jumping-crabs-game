@@ -6,11 +6,11 @@ let config = {
     version: "1.0",
     title: "crabs game",
     pixelArt: true,
-    scene: [Lv01],
+    scene: [PlayScene],
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true,
+            //debug: true,
             gravity: { y: 1000 }
         }
     },
