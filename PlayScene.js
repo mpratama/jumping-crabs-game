@@ -6,10 +6,9 @@ class PlayScene extends Phaser.Scene {
     }
 
     preload(){
-		this.load.image('smile', '../assets/senyum.jpg');
-		this.load.image('ground', '../assets/platform.png');
 		this.load.tilemapTiledJSON('lv01', '../assets/map.json');
 		this.load.image('LandTile', '../assets/Land.png');
+		this.load.image('bg', '../assets/bg.png');
 		this.load.spritesheet('char', '../assets/piting2.png', {frameWidth: 30, frameHeight: 42});
 	}
 
@@ -17,9 +16,11 @@ class PlayScene extends Phaser.Scene {
     	this.mlem = 0;
     	this.mlom = 0;
 		
+		this.bg = this.add.image(0, 0, 'bg').setOrigin(0).setScrollFactor(0);
 		this.tmap = this.make.tilemap({key: 'lv01'});
 		this.tile1 = this.tmap.addTilesetImage('Land', 'LandTile');
-		this.layer1 = this.tmap.createStaticLayer("00", this.tile1, 0, 0);
+		this.layer0 = this.tmap.createStaticLayer("00", this.tile1, 0, 0);
+		this.layer1 = this.tmap.createStaticLayer("01", this.tile1, 0, 0);
 		this.layer1.setCollisionByProperty({collides: true});
 		
 		this.cursors = this.input.keyboard.createCursorKeys();
@@ -47,7 +48,7 @@ class PlayScene extends Phaser.Scene {
         });
         //this.player.play('jalan');
 
-        this.deadZone = this.add.zone(0, 1510, 2560, 1);
+        this.deadZone = this.add.zone(0, 1540, 2560, 1);
         this.deadZone.setOrigin(0);
         this.physics.add.existing(this.deadZone);
         this.deadZone.body.setAllowGravity(false);
@@ -55,11 +56,14 @@ class PlayScene extends Phaser.Scene {
 		this.physics.world.setBounds(0, 0, 2560, 1600);
 		this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
 		this.cameras.main.setBounds(0, 0, 2560, 1600);
-		this.cameras.main.setBackgroundColor(0x7fdbda);
 		
 		this.physics.add.collider(this.player, this.layer1, null, null, this);
 		this.physics.add.overlap(this.player, this.deadZone, () => {
-			this.cameras.main.shake();
+			//this.deadZone.active = false;
+			this.deadZone.destroy();
+			this.cameras.main.stopFollow();
+			this.player.body.destroy();
+			this.cameras.main.flash(800, 255, 0, 0);
 			this.player.setVisible(false);
 			setTimeout(() => this.scene.restart(), 5000);
 		}, null, this);
@@ -68,8 +72,6 @@ class PlayScene extends Phaser.Scene {
 		this.player.setCollideWorldBounds(true);
 		this.player.setVelocity(60, 0);
 		this.player.setBounce(1, 0);
-		
-		//this.physics.add.collider(this.player, [this.ground, this.ground2]);
 		
 	}
 	
