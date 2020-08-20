@@ -15,16 +15,19 @@ class PlayScene extends Phaser.Scene {
 	}
 
     create(){
+    	this.firstCutScene = localStorage.getItem("played");
     	this.flying = false;
     	this.movedir = 0;
     	this.jumptext_clicked = false;
 		
-		this.bg = this.add.image(0, 0, 'bg').setOrigin(0).setScrollFactor(0);		
+		this.bg = this.add.image(0, 0, 'bg').setOrigin(0).setScrollFactor(0);
+		this.t01 = this.add.bitmapText(10, 1390, 'tikitropic', "I Don't like this soda can!").setFontSize(23).setVisible(false);
+		this.t02 = this.add.bitmapText(10, 1390, 'tikitropic', "I need to find my shell").setFontSize(23).setVisible(false);
 		this.tmap = this.make.tilemap({key: 'lv01'});
 		this.tile1 = this.tmap.addTilesetImage('Land', 'LandTile');
 		this.layer0 = this.tmap.createStaticLayer("00", this.tile1, 0, 0);
 		this.layer1 = this.tmap.createStaticLayer("01", this.tile1, 0, 0);
-		this.jumptext = this.add.bitmapText(540, 310, 'tikitropic', 'jump !').setScrollFactor(0).setInteractive();
+		this.jumptext = this.add.bitmapText(540, 310, 'tikitropic', 'jump !').setScrollFactor(0).setVisible(false).setInteractive();
 		this.pwUp = this.tmap.getObjectLayer('powerups').objects;
 		this.layer1.setCollisionByProperty({collides: true});
 
@@ -74,7 +77,7 @@ class PlayScene extends Phaser.Scene {
         this.deadZone.body.setAllowGravity(false);
 
 		this.physics.world.setBounds(0, 0, 2560, 1600);
-		this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
+		//this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
 		this.cameras.main.setBounds(0, 0, 2560, 1600);
 		
 		this.physics.add.collider(this.player, this.layer1, null, null, this);
@@ -96,7 +99,7 @@ class PlayScene extends Phaser.Scene {
 		}, null, this);
 
 		this.physics.add.overlap(this.player, this.deadZone, () => {
-			//this.deadZone.active = false;
+			localStorage.setItem("played", true);
 			this.deadZone.destroy();
 			this.cameras.main.stopFollow();
 			this.player.body.destroy();
@@ -107,9 +110,67 @@ class PlayScene extends Phaser.Scene {
 		
 		this.player.setActive(true);
 		this.player.setCollideWorldBounds(true);
-		this.player.setVelocity(70, 0);
+		//this.player.setVelocity(70, 0);
 		this.player.body.useDamping = true;
 		this.player.setBounce(1, 0);
+
+		this.cutscene = this.tweens.createTimeline();
+		this.cutscene.add({
+			targets: this.cameras.main,
+			scrollX: 0,
+			scrollY: 1420,
+			ease: 'Power1',
+			duration: 3000
+		});
+		this.cutscene.add({
+			delay: 1000,
+			targets: this.t01,
+			y: 1360,
+			ease: 'Bounce',
+			duration: 1000,
+			onStart: () => {
+				this.t01.setVisible(true);
+			}
+		});
+		this.cutscene.add({
+			targets: this.t01,
+			y: 1360,
+			duration: 2000,
+			onComplete: () => {
+				this.t01.destroy();
+			}
+		});
+		this.cutscene.add({
+			delay: 1000,
+			targets: this.t02,
+			y: 1360,
+			ease: 'Bounce',
+			duration: 1000,
+			onStart: () => {
+				this.t02.setVisible(true);
+			}
+		});
+		this.cutscene.add({
+			targets: this.t02,
+			y: 1360,
+			duration: 2000,
+			onComplete: () => {
+				this.t02.destroy();
+			}
+		});
+		this.cutscene.add({
+			targets: this.cameras.main,
+			scrollX: 0,
+			scrollY: 1420,
+			duration: 1000,
+			onComplete: () => {
+				//this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
+				//this.player.setVelocity(70,0);
+				this.jumptext.setVisible(true);
+			}
+		});
+
+		this.firstPlayCheck();
 		
 	}
 	
@@ -117,6 +178,15 @@ class PlayScene extends Phaser.Scene {
 		this.animWalkCheck();
 		this.jumpCheck();      
 		this.facingCheck();
+	}
+
+	firstPlayCheck() {
+		if (this.firstCutScene != "true") {
+			this.cutscene.play();
+			console.log("First cutscene");
+		} else if (this.firstCutScene == "true") {
+			this.player.setVelocity(70, 0);
+		}
 	}
 
 	animWalkCheck() {
