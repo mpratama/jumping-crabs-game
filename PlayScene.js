@@ -6,22 +6,34 @@ class PlayScene extends Phaser.Scene {
     }
 
     preload(){
+    	this.load.bitmapFont('tikitropic', '../assets/tiki_tropic.png', '../assets/tiki_tropic.xml');
 		this.load.tilemapTiledJSON('lv01', '../assets/map.json');
 		this.load.image('LandTile', '../assets/Land.png');
+		this.load.image('buah', '../assets/cherry.png');
 		this.load.image('bg', '../assets/bg.png');
 		this.load.spritesheet('char', '../assets/piting2.png', {frameWidth: 30, frameHeight: 42});
 	}
 
     create(){
+    	this.jumptext_clicked = 0;
     	this.mlem = 0;
     	this.mlom = 0;
 		
-		this.bg = this.add.image(0, 0, 'bg').setOrigin(0).setScrollFactor(0);
+		this.bg = this.add.image(0, 0, 'bg').setOrigin(0).setScrollFactor(0);		
 		this.tmap = this.make.tilemap({key: 'lv01'});
 		this.tile1 = this.tmap.addTilesetImage('Land', 'LandTile');
 		this.layer0 = this.tmap.createStaticLayer("00", this.tile1, 0, 0);
 		this.layer1 = this.tmap.createStaticLayer("01", this.tile1, 0, 0);
+		this.jumptext = this.add.bitmapText(460, 180, 'tikitropic', 'jump !').setScrollFactor(0).setInteractive();
 		this.layer1.setCollisionByProperty({collides: true});
+
+		this.jumptext.on('pointerdown', ()=> {
+			this.jumptext_clicked = 1;
+		});
+
+		this.jumptext.on('pointerup', ()=> {
+			this.jumptext_clicked = 0;
+		});
 		
 		this.cursors = this.input.keyboard.createCursorKeys();
 		this.teks = this.add.text(10, 10, 0);
@@ -76,6 +88,7 @@ class PlayScene extends Phaser.Scene {
 	}
 	
 	update(){
+		
 		if (this.mlom == 1) {
 			this.player.setVelocityX(100);
 			setTimeout(() => {
@@ -95,9 +108,9 @@ class PlayScene extends Phaser.Scene {
 	}
 
 	jumpCheck() {
-		this.screenpointer = this.input.activePointer;
+		//this.screenpointer = this.input.activePointer;
 		
-		if (this.screenpointer.isDown && this.player.body.blocked.down){
+		if (this.jumptext_clicked == 1 && this.player.body.blocked.down){
 			if (this.mlem == 0){
 				this.player.setVelocityY(-300);
 			} else if (this.mlem == 1) {
