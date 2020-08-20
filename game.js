@@ -2,9 +2,8 @@ let config = {
     width: 667,
 	height: 375,
     //backgroundColor: 0x000000,
-    url: "yesbesoklibur.com",
     version: "1.0",
-    title: "crabs game",
+    title: "Jumping Crab",
     pixelArt: true,
     scene: [PlayScene],
     physics: {

@@ -6,6 +6,11 @@ class PlayScene extends Phaser.Scene {
     }
 
     preload(){
+    	//this.load.audio('music', '../assets/music.mp3');
+    	this.load.audio('jump', '../assets/jump.wav');
+    	this.load.audio('dead', '../assets/dead.mp3');
+    	this.load.audio('powerup', '../assets/powerups.mp3');
+    	this.load.audio('win', '../assets/win.mp3');
     	this.load.bitmapFont('tikitropic', '../assets/tiki_tropic.png', '../assets/tiki_tropic.xml');
 		this.load.tilemapTiledJSON('lv01', '../assets/map.json');
 		this.load.image('LandTile', '../assets/Land.png');
@@ -15,6 +20,13 @@ class PlayScene extends Phaser.Scene {
 	}
 
     create(){
+    	this.jumpMusic = this.sound.add('jump');
+    	this.deadMusic = this.sound.add('dead');
+    	this.powerUpMusic = this.sound.add('powerup');
+    	this.winMusic = this.sound.add('win');
+        /*this.playMusic.play("", {
+            loop: true
+        });*/
     	this.firstCutScene = localStorage.getItem("played");
     	this.flying = false;
     	this.movedir = 0;
@@ -22,7 +34,7 @@ class PlayScene extends Phaser.Scene {
 		
 		this.bg = this.add.image(0, 0, 'bg').setOrigin(0).setScrollFactor(0);
 		this.t01 = this.add.bitmapText(10, 1390, 'tikitropic', "I Don't like this soda can!").setFontSize(23).setVisible(false);
-		this.t02 = this.add.bitmapText(10, 1390, 'tikitropic', "I have to find my shell").setFontSize(23).setVisible(false);
+		this.t02 = this.add.bitmapText(10, 1390, 'tikitropic', "I have to find my shell").setFontSize(23).setVisible(false)
 		this.tmap = this.make.tilemap({key: 'lv01'});
 		this.tile1 = this.tmap.addTilesetImage('Land', 'LandTile');
 		this.layer0 = this.tmap.createStaticLayer("00", this.tile1, 0, 0);
@@ -31,6 +43,9 @@ class PlayScene extends Phaser.Scene {
 		this.pwUp = this.tmap.getObjectLayer('powerups').objects;
 		this.layer1.setCollisionByProperty({collides: true});
 
+		this.winText = this.add.bitmapText(113, 7, 'tikitropic', "Congratulations! You Win!").setFontSize(40).setScrollFactor(0).setTint(0xe8505b).setOrigin(0).setVisible(false);
+		this.credits = this.add.bitmapText(63, 267, 'tikitropic', "Graphics, Audio, & Programmed by Pratama").setFontSize(30).setScrollFactor(0).setTint(0xe8505b).setOrigin(0).setVisible(false);
+		this.playerWin = this.add.sprite(313, 168, "char", 3).setScrollFactor(0).setScale(4).setVisible(false);
 		this.jumptext.on('pointerdown', ()=> {
 			this.jumptext_clicked = true;
 		});
@@ -39,11 +54,15 @@ class PlayScene extends Phaser.Scene {
 			this.jumptext_clicked = false;
 		});
 
-		//this.player = this.physics.add.sprite(80, 1420, "char", 0);
-		this.player = this.physics.add.sprite(1362, 108, "char", 0);
+		this.player = this.physics.add.sprite(80, 1420, "char", 0);
+		//this.player = this.physics.add.sprite(2312, 68, "char", 0);
+		this.shell = this.physics.add.sprite(2442, 78, "char", 7).setScale(1.6);
 		this.player.body.setSize(30,32);
 		this.player.body.setOffset(0,9);
 		//this.player.body.setAllowGravity(false);
+		this.shell.body.setSize(21,21);
+		//this.shell.body.setOffset(0,0);
+		//this.shell.body.setAllowGravity(false);
 
 		
 
@@ -87,6 +106,7 @@ class PlayScene extends Phaser.Scene {
 		this.cameras.main.setBounds(0, 0, 2560, 1600);
 		
 		this.physics.add.collider(this.player, this.layer1, null, null, this);
+		this.physics.add.collider(this.shell, this.layer1, null, null, this);
 		this.physics.add.collider(this.fruits, this.layer1, null, null, this);
 
 		this.physics.add.overlap(this.player, this.fruits, () => {
@@ -104,9 +124,24 @@ class PlayScene extends Phaser.Scene {
 
 		}, null, this);
 
+		this.physics.add.overlap(this.player, this.shell, () => {
+			this.shell.destroy();
+			this.player.body.stop();
+			this.player.y-=2;
+			this.player.body.setAllowGravity(false);
+			this.player.setVisible(false);
+			this.jumptext.destroy();
+			this.winText.setVisible(true);
+			this.playerWin.setVisible(true);
+			this.credits.setVisible(true);
+			this.winMusic.play();
+			this.playMusic.stop();
+		}, null, this);
+
 		this.physics.add.overlap(this.player, this.deadZone, () => {
 			localStorage.setItem("played", true);
 			this.deadZone.destroy();
+			this.deadMusic.play();
 			this.cameras.main.stopFollow();
 			this.player.body.destroy();
 			this.cameras.main.flash(1000, 254, 145, 202);
@@ -126,7 +161,7 @@ class PlayScene extends Phaser.Scene {
 			scrollX: 0,
 			scrollY: 1420,
 			ease: 'Power1',
-			duration: 3000
+			duration: 10000
 		});
 		this.cutscene.add({
 			delay: 1000,
@@ -166,9 +201,24 @@ class PlayScene extends Phaser.Scene {
 		});
 		this.cutscene.add({
 			targets: this.cameras.main,
+			scrollX: 2442,
+			scrollY: 0,
+			ease: 'Power1',
+			duration: 5000
+		});
+		this.cutscene.add({
+			delay: 1000,
+			targets: this.cameras.main,
+			scrollX: 2442,
+			scrollY: 0,
+			ease: 'Power1',
+			duration: 2000
+		});
+		this.cutscene.add({
+			targets: this.cameras.main,
 			scrollX: 0,
 			scrollY: 1420,
-			duration: 1000,
+			duration: 3000,
 			onComplete: () => {
 				this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
 				this.player.setVelocity(70,0);
@@ -205,6 +255,7 @@ class PlayScene extends Phaser.Scene {
 
 	jumpCheck() {
 		if (this.jumptext_clicked && this.player.body.blocked.down){
+			this.jumpMusic.play();
 			if (this.flying){
 				this.player.setVelocityY(-370);
 			}else if (!this.flying){
@@ -229,6 +280,7 @@ class PlayScene extends Phaser.Scene {
 
 	accel(){
 		this.flying = true;
+		this.powerUpMusic.play();
 		this.player.setVelocityX(200 * this.movedir);
 		setTimeout(() => {
 			this.flying = false;
