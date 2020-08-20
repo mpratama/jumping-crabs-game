@@ -25,6 +25,7 @@ class PlayScene extends Phaser.Scene {
 		this.layer0 = this.tmap.createStaticLayer("00", this.tile1, 0, 0);
 		this.layer1 = this.tmap.createStaticLayer("01", this.tile1, 0, 0);
 		this.jumptext = this.add.bitmapText(540, 310, 'tikitropic', 'jump !').setScrollFactor(0).setInteractive();
+		this.pwUp = this.tmap.getObjectLayer('powerups').objects;
 		this.layer1.setCollisionByProperty({collides: true});
 
 		this.jumptext.on('pointerdown', ()=> {
@@ -36,17 +37,26 @@ class PlayScene extends Phaser.Scene {
 		});
 
 		this.player = this.physics.add.sprite(80, 1420, "char", 0);
-		this.player.body.setSize(30,25);
-		this.player.body.setOffset(0,16);
+		this.player.body.setSize(30,35);
+		this.player.body.setOffset(0,5);
 
-		this.buah = this.physics.add.image(500, 1452, 'buah');
+		
+
+		this.buah1 = this.physics.add.image(this.pwUp[0].x, this.pwUp[0].y, 'buah');
+		this.buah2 = this.physics.add.image(700, 1402, 'buah');
+		//this.buah.body.setAllowGravity(false);
+
+		this.fruits = this.add.group([this.buah1, this.buah2]);
+		for (var i=0; i<this.fruits.getChildren().length; i++){
+			this.fruits.getChildren()[i].body.setAllowGravity(false);
+		}
 
 		this.pl01 = this.add.zone(0, 500, 500, 30);
 
 		this.animWalk = this.anims.create({
             key: 'walk',
             frames: this.anims.generateFrameNumbers('char', {
-                frames: [0,1]
+                frames: [4,5]
             }),
             frameRate: 8,
             repeat: -1,
@@ -54,7 +64,7 @@ class PlayScene extends Phaser.Scene {
         this.animJump = this.anims.create({
             key: 'jump',
             frames: this.anims.generateFrameNumbers('char', {
-                frames: [2]
+                frames: [6]
             }),
         });
 
@@ -68,15 +78,19 @@ class PlayScene extends Phaser.Scene {
 		this.cameras.main.setBounds(0, 0, 2560, 1600);
 		
 		this.physics.add.collider(this.player, this.layer1, null, null, this);
-		this.physics.add.collider(this.buah, this.layer1, null, null, this);
+		this.physics.add.collider(this.fruits, this.layer1, null, null, this);
 
-		this.physics.add.overlap(this.player, this.buah, () => {
-			this.buah.setAlpha(0.5)
-			this.buah.body.enable = false;
+		this.physics.add.overlap(this.player, this.fruits, () => {
+			this.fruits.setAlpha(0.5)
+			for (var i=0; i<this.fruits.getChildren().length; i++){
+				this.fruits.getChildren()[i].body.enable = false;
+			}
 			this.accel();
 			setTimeout(() => {
-				this.buah.body.enable = true;
-				this.buah.setAlpha(1);
+				for (var i=0; i<this.fruits.getChildren().length; i++){
+					this.fruits.getChildren()[i].body.enable = true;
+				}
+				this.fruits.setAlpha(1);
 			}, 5000);
 
 		}, null, this);
@@ -142,7 +156,7 @@ class PlayScene extends Phaser.Scene {
 			this.flying = false;
 			/*this.player.body.setAccelerationX(70);
 			this.player.body.setDragX(0.99);*/
-			this.player.setVelocityX(60 * this.movedir);
+			this.player.setVelocityX(80 * this.movedir);
 		}, 5000);
 	}
 }
