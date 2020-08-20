@@ -22,7 +22,7 @@ class PlayScene extends Phaser.Scene {
 		
 		this.bg = this.add.image(0, 0, 'bg').setOrigin(0).setScrollFactor(0);
 		this.t01 = this.add.bitmapText(10, 1390, 'tikitropic', "I Don't like this soda can!").setFontSize(23).setVisible(false);
-		this.t02 = this.add.bitmapText(10, 1390, 'tikitropic', "I need to find my shell").setFontSize(23).setVisible(false);
+		this.t02 = this.add.bitmapText(10, 1390, 'tikitropic', "I have to find my shell").setFontSize(23).setVisible(false);
 		this.tmap = this.make.tilemap({key: 'lv01'});
 		this.tile1 = this.tmap.addTilesetImage('Land', 'LandTile');
 		this.layer0 = this.tmap.createStaticLayer("00", this.tile1, 0, 0);
@@ -39,17 +39,19 @@ class PlayScene extends Phaser.Scene {
 			this.jumptext_clicked = false;
 		});
 
-		this.player = this.physics.add.sprite(80, 1420, "char", 0);
-		this.player.body.setSize(30,35);
-		this.player.body.setOffset(0,5);
+		//this.player = this.physics.add.sprite(80, 1420, "char", 0);
+		this.player = this.physics.add.sprite(1992, 1293, "char", 0);
+		this.player.body.setSize(30,32);
+		this.player.body.setOffset(0,9);
+		//this.player.body.setAllowGravity(false);
 
 		
 
 		this.buah1 = this.physics.add.image(this.pwUp[0].x, this.pwUp[0].y, 'buah');
-		this.buah2 = this.physics.add.image(700, 1402, 'buah');
-		//this.buah.body.setAllowGravity(false);
+		this.buah2 = this.physics.add.image(this.pwUp[1].x, this.pwUp[1].y, 'buah');
+		this.buah3 = this.physics.add.image(this.pwUp[2].x, this.pwUp[2].y, 'buah');
 
-		this.fruits = this.add.group([this.buah1, this.buah2]);
+		this.fruits = this.add.group([this.buah1, this.buah2, this.buah3]);
 		for (var i=0; i<this.fruits.getChildren().length; i++){
 			this.fruits.getChildren()[i].body.setAllowGravity(false);
 		}
@@ -105,7 +107,7 @@ class PlayScene extends Phaser.Scene {
 			this.player.body.destroy();
 			this.cameras.main.flash(800, 255, 0, 0);
 			this.player.setVisible(false);
-			setTimeout(() => this.scene.restart(), 5000);
+			setTimeout(() => this.scene.restart(), 1000);
 		}, null, this);
 		
 		this.player.setActive(true);
@@ -164,8 +166,8 @@ class PlayScene extends Phaser.Scene {
 			scrollY: 1420,
 			duration: 1000,
 			onComplete: () => {
-				//this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
-				//this.player.setVelocity(70,0);
+				this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
+				this.player.setVelocity(70,0);
 				this.jumptext.setVisible(true);
 			}
 		});
@@ -185,6 +187,8 @@ class PlayScene extends Phaser.Scene {
 			this.cutscene.play();
 			console.log("First cutscene");
 		} else if (this.firstCutScene == "true") {
+			this.jumptext.setVisible(true);
+			this.cameras.main.startFollow(this.player, true, 0.09, 0.09);
 			this.player.setVelocity(70, 0);
 		}
 	}
@@ -200,7 +204,7 @@ class PlayScene extends Phaser.Scene {
 			if (this.flying){
 				this.player.setVelocityY(-370);
 			}else if (!this.flying){
-				this.player.setVelocityY(-300);
+				this.player.setVelocityY(-310);
 			}
 		}
 	}
@@ -221,12 +225,12 @@ class PlayScene extends Phaser.Scene {
 
 	accel(){
 		this.flying = true;
-		this.player.setVelocityX(300 * this.movedir);
+		this.player.setVelocityX(200 * this.movedir);
 		setTimeout(() => {
 			this.flying = false;
 			/*this.player.body.setAccelerationX(70);
 			this.player.body.setDragX(0.99);*/
-			this.player.setVelocityX(80 * this.movedir);
+			this.player.setVelocityX(70 * this.movedir);
 		}, 5000);
 	}
 }
