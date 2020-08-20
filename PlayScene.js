@@ -40,7 +40,7 @@ class PlayScene extends Phaser.Scene {
 		});
 
 		//this.player = this.physics.add.sprite(80, 1420, "char", 0);
-		this.player = this.physics.add.sprite(1992, 1293, "char", 0);
+		this.player = this.physics.add.sprite(1362, 108, "char", 0);
 		this.player.body.setSize(30,32);
 		this.player.body.setOffset(0,9);
 		//this.player.body.setAllowGravity(false);
@@ -50,8 +50,12 @@ class PlayScene extends Phaser.Scene {
 		this.buah1 = this.physics.add.image(this.pwUp[0].x, this.pwUp[0].y, 'buah');
 		this.buah2 = this.physics.add.image(this.pwUp[1].x, this.pwUp[1].y, 'buah');
 		this.buah3 = this.physics.add.image(this.pwUp[2].x, this.pwUp[2].y, 'buah');
+		this.buah4 = this.physics.add.image(this.pwUp[3].x, this.pwUp[3].y, 'buah');
+		this.buah5 = this.physics.add.image(this.pwUp[4].x, this.pwUp[4].y, 'buah');
+		this.buah6 = this.physics.add.image(this.pwUp[5].x, this.pwUp[5].y, 'buah');
+		//this.buah7 = this.physics.add.image(this.pwUp[6].x, this.pwUp[6].y, 'buah');
 
-		this.fruits = this.add.group([this.buah1, this.buah2, this.buah3]);
+		this.fruits = this.add.group([this.buah1, this.buah2, this.buah3, this.buah4, this.buah5, this.buah6]);
 		for (var i=0; i<this.fruits.getChildren().length; i++){
 			this.fruits.getChildren()[i].body.setAllowGravity(false);
 		}
@@ -105,7 +109,7 @@ class PlayScene extends Phaser.Scene {
 			this.deadZone.destroy();
 			this.cameras.main.stopFollow();
 			this.player.body.destroy();
-			this.cameras.main.flash(800, 255, 0, 0);
+			this.cameras.main.flash(1000, 254, 145, 202);
 			this.player.setVisible(false);
 			setTimeout(() => this.scene.restart(), 1000);
 		}, null, this);
