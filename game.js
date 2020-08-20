@@ -1,6 +1,6 @@
 let config = {
-    width: 570,
-	height: 250,
+    width: 667,
+	height: 375,
     //backgroundColor: 0x000000,
     url: "yesbesoklibur.com",
     version: "1.0",
@@ -11,7 +11,7 @@ let config = {
         default: 'arcade',
         arcade: {
             //debug: true,
-            gravity: { y: 1000 }
+            gravity: { y: 700 }
         }
     },
     scale: {
