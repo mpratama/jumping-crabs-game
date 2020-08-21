@@ -10,6 +10,7 @@
 Go to this [link](https://mpratama.itch.io/jumping-crab)  to play the game directly in your browser.
 
 <p>This game was made using these tools:</p>
+
 - Phaser Framework
 - Aseprite for graphics & animation
 - Bfxr for sounds
