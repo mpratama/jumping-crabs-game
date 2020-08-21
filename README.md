@@ -16,3 +16,6 @@ Go to this [link](https://mpratama.itch.io/jumping-crab)  to play the game direc
 - Bfxr for sounds
 - Tiled for level editor
 - Sublime text for programming
+
+## Support the developer
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Q5Q022YPO)
