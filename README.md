@@ -1,7 +1,7 @@
 # Jumping Crabs Game
 1 tap platformer game made for Weekly Game Jam 162.
 
-##About
+## About
 
 ![cover image](https://img.itch.zone/aW1nLzQwODk2NjkucG5n/315x250%23c/u5RFUs.png) 
 
