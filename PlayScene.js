@@ -135,7 +135,7 @@ class PlayScene extends Phaser.Scene {
 			this.playerWin.setVisible(true);
 			this.credits.setVisible(true);
 			this.winMusic.play();
-			this.playMusic.stop();
+			//this.playMusic.stop();
 		}, null, this);
 
 		this.physics.add.overlap(this.player, this.deadZone, () => {
